@@ -1,29 +1,25 @@
-// We require the Hardhat Runtime Environment explicitly here. This is optional
-// but useful for running the script in a standalone fashion through `node <script>`.
-//
-// When running the script with `npx hardhat run <script>` you'll find the Hardhat
-// Runtime Environment's members available in the global scope.
+
 const hre = require("hardhat");
 
+const owners = [
+  "0x2cD3d676F4C53D645aa523cadBf00BA049f4E8eB",
+  "0x2E7b6533641b120E88Bd9d97Aa2D7Fd0091Cf32e",
+  "0xbcFb8bF3818FC956Ba242e726afE7Be16EFB3eAE"
+]; // multisig wallet owners
+const required = 2; // required number of signatures to complete a multi-sig transaction
+
 async function main() {
-  // Hardhat always runs the compile task when running scripts with its command
-  // line interface.
-  //
-  // If this script is run directly using `node` you may want to call compile
-  // manually to make sure everything is compiled
-  // await hre.run('compile');
+  const EtherMultiSigWallet = hre.ethers.getContractFactory("EtherMultiSigWallet")
+  const etherMultiSigWallet = EtherMultiSigWallet.deploy(owners, required)
+  await etherMultiSigWallet.deployed()
+  console.log(`EtherMultiSigWallet deployed at ${etherMultiSigWallet.address}`)
 
-  // We get the contract to deploy
-  const Greeter = await hre.ethers.getContractFactory("Greeter");
-  const greeter = await Greeter.deploy("Hello, Hardhat!");
-
-  await greeter.deployed();
-
-  console.log("Greeter deployed to:", greeter.address);
+  const ERC20MultiSigWallet = hre.ethers.getContractFactory("ERC20MultiSigWallet")
+  const erc20MultiSigWallet = ERC20MultiSigWallet.deploy(owners, required)
+  await erc20MultiSigWallet.deployed()
+  console.log(`ERC20MultiSigWallet deployed at ${erc20MultiSigWallet.address}`)
 }
 
-// We recommend this pattern to be able to use async/await everywhere
-// and properly handle errors.
 main()
   .then(() => process.exit(0))
   .catch((error) => {
